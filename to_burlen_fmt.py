@@ -4,7 +4,19 @@ Pass --m-type, --e-type, and --outdir as args to this script
 Outputs the format expected by Burlen's VTK plugin
 specified in https://docs.google.com/document/d/1sYXKnYKfr_5ljKqns4aFDi67N2Hq7nPeY0B7qKanEog
 
-The output will look like it came from my simulation, running on one cell for a single timepoint. The data arrays (membrane variables, spikes) are all [0]. The only real data is the morphology and section names in <outdir>/seg_coords/0.h5
+The output will look like it came from my simulation, running on one
+cell for a single timepoint. The data arrays (membrane variables,
+spikes) are all [0]. The only real data is the morphology and section
+names in <outdir>/seg_coords/0.h5
+
+The section names are stored in 2 arrays within the file
+<outdir>/seg_coords/0.h5. Each element of each array corresponds to a section.
+
+  part_name = elements are a coded version of the part name
+              0 = soma, 1 = dend, 2 = apic, 3 = basal, 4 = axon
+
+  part_idx  = elements are the index within the named part
+
 """
 import shutil
 import logging as log
@@ -39,6 +51,12 @@ def create_seg_coords(outdir, m_type, e_type):
         ei = 'e' if e_type == 'cADpyr' else 'i'
         layer = int(m_type[1]) # L5_TTPC1, or L23_DBC
 
+        secmap = {'soma': 0, 'dend': 1, 'apic': 2, 'basal': 3, 'axon': 4}
+        part_name = [secmap[sec.name().split('.')[-1].split('[')[0]]
+                     for sec in model.entire_cell.all]
+        part_idx = [int(sec.name().split('.')[-1].split('[')[1][:-1])
+                    for sec in model.entire_cell.all]
+
         outfile.create_dataset('p0', data=coords['p0'])
         outfile.create_dataset('p05', data=coords['p05'])
         outfile.create_dataset('p1', data=coords['p1'])
@@ -46,7 +64,8 @@ def create_seg_coords(outdir, m_type, e_type):
         outfile.create_dataset('d0', data=coords['d0'])
         outfile.create_dataset('d1', data=coords['d1'])
         outfile.create_dataset('ei', data=ei)
-        # outfile.create_dataset('part_ids', data=cell.get_part_ids()) # Used
+        outfile.create_dataset('part_name', data=part_name)
+        outfile.create_dataset('part_idx', data=part_idx)
         outfile.create_dataset('m_type', data=m_type)
         outfile.create_dataset('e_type', data=e_type)
         outfile.create_dataset('layer', data=layer)
