@@ -88,11 +88,10 @@ if __name__ == '__main__':
     if os.path.exists(args.outdir):
         if args.force:
             shutil.rmtree(args.outdir)
-            os.mkdir(args.outdir)
-            os.mkdir(os.path.join(args.outdir, 'seg_coords'))
         else:
             log.error("Path already exists: {}".format(args.outdir))
-            
+    os.mkdir(args.outdir)
+    os.mkdir(os.path.join(args.outdir, 'seg_coords'))
 
     create_master_file(args.outdir)
     create_spikes_h5(args.outdir)
