@@ -29,19 +29,21 @@ from neuron import h
 from morphology import Morphology
 from run import get_model
 
+ZERO_ARR = np.array([0], dtype=np.float32)
+
 def create_master_file(outdir):
     masterfilename = os.path.join(outdir, 'master.h5')
     with h5py.File(masterfilename, 'w') as masterfile:
         masterfile.create_dataset('neuro-data-format-version', data=0.3)
         masterfile.create_dataset('num_cells', data=1)
-        masterfile.create_dataset('spikerate_bins', data=[0])
-        masterfile.create_dataset('thal_spikerate', data=[0])
-        masterfile.create_dataset('bkg_spikerate', data=[0])
+        masterfile.create_dataset('spikerate_bins', data=ZERO_ARR)
+        masterfile.create_dataset('thal_spikerate', data=ZERO_ARR)
+        masterfile.create_dataset('bkg_spikerate', data=ZERO_ARR)
 
 def create_spikes_h5(outdir):
     with h5py.File(os.path.join(outdir, 'spikes.h5'), 'w') as outfile:
-        outfile.create_dataset('spikes/timestamps', data=[0])
-        outfile.create_dataset('spikes/gids', data=[0])
+        outfile.create_dataset('spikes/timestamps', data=ZERO_ARR)
+        outfile.create_dataset('spikes/gids', data=ZERO_ARR)
 
 def create_seg_coords(outdir, m_type, e_type):
     with h5py.File(os.path.join(outdir, 'seg_coords', '0.h5'), 'w') as outfile:
@@ -74,8 +76,8 @@ def create_seg_coords(outdir, m_type, e_type):
 
 def create_im_h5(outdir):
     with h5py.File(os.path.join(outdir, 'im.h5'), 'w') as outfile:
-        outfile.create_dataset('/im/data', data=[0])
-        outfile.create_dataset('/v/data', data=[0])
+        outfile.create_dataset('/im/data', data=ZERO_ARR)
+        outfile.create_dataset('/v/data', data=ZERO_ARR)
 
 if __name__ == '__main__':
     parser = ArgumentParser()
