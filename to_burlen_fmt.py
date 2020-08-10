@@ -23,6 +23,7 @@ import logging as log
 import os
 from argparse import ArgumentParser
 import h5py
+import numpy as np
 
 from neuron import h
 
@@ -72,12 +73,15 @@ def create_seg_coords(outdir, m_type, e_type):
         outfile.create_dataset('e_type', data=e_type)
         outfile.create_dataset('layer', data=layer)
         outfile.create_dataset('soma_pos', data=morph.get_soma_pos())
+
+        return len(part_name)
         
 
-def create_im_h5(outdir):
+def create_im_h5(outdir, nsegs):
     with h5py.File(os.path.join(outdir, 'im.h5'), 'w') as outfile:
-        outfile.create_dataset('/im/data', data=ZERO_ARR)
-        outfile.create_dataset('/v/data', data=ZERO_ARR)
+        arr = np.array([0]*nsegs, dtype=np.float32)
+        outfile.create_dataset('/im/data', data=arr)
+        outfile.create_dataset('/v/data', data=arr)
 
 if __name__ == '__main__':
     parser = ArgumentParser()
@@ -97,5 +101,5 @@ if __name__ == '__main__':
 
     create_master_file(args.outdir)
     create_spikes_h5(args.outdir)
-    create_seg_coords(args.outdir, args.m_type, args.e_type)
-    create_im_h5(args.outdir)
+    nsegs = create_seg_coords(args.outdir, args.m_type, args.e_type)
+    create_im_h5(args.outdir, nsegs)
