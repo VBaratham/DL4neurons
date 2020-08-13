@@ -79,7 +79,7 @@ def create_seg_coords(outdir, m_type, e_type):
 
 def create_im_h5(outdir, nsegs):
     with h5py.File(os.path.join(outdir, 'im.h5'), 'w') as outfile:
-        arr = np.array([0]*nsegs, dtype=np.float32)
+        arr = np.atleast_2d(np.array([0]*nsegs, dtype=np.float32))
         outfile.create_dataset('/im/data', data=arr)
         outfile.create_dataset('/v/data', data=arr)
         outfile.create_dataset('/mapping/gids', data=[0])
