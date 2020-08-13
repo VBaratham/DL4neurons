@@ -82,6 +82,9 @@ def create_im_h5(outdir, nsegs):
         arr = np.array([0]*nsegs, dtype=np.float32)
         outfile.create_dataset('/im/data', data=arr)
         outfile.create_dataset('/v/data', data=arr)
+        outfile.create_dataset('/mapping/gids', data=[0])
+        outfile.create_dataset('/mapping/time/', data=[0.0, 0.1, 0.1])
+        outfile.create_dataset('/mapping/element_id', data=range(nsegs))
 
 if __name__ == '__main__':
     parser = ArgumentParser()
