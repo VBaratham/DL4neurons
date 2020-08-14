@@ -54,11 +54,17 @@ def create_seg_coords(outdir, m_type, e_type):
         ei = 'e' if e_type == 'cADpyr' else 'i'
         layer = int(m_type[1]) # L5_TTPC1, or L23_DBC
 
+        # Find section name for each segment
         secmap = {'soma': 0, 'dend': 1, 'apic': 2, 'basal': 3, 'axon': 4}
-        part_name = [secmap[sec.name().split('.')[-1].split('[')[0]]
-                     for sec in model.entire_cell.all]
-        part_idx = [int(sec.name().split('.')[-1].split('[')[1][:-1])
-                    for sec in model.entire_cell.all]
+        part_name, part_idx = [], []
+        for sec in model.entire_cell.all:
+            nseg = sec.nseg
+            part_idx.extend(
+                [int(sec.name().split('.')[-1].split('[')[1][:-1])] * nseg
+            )
+            part_name.extend(
+                [secmap[sec.name().split('.')[-1].split('[')[0]]] * nseg
+            )
 
         outfile.create_dataset('p0', data=coords['p0'])
         outfile.create_dataset('p05', data=coords['p05'])
