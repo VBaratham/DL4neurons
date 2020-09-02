@@ -12,8 +12,8 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
-import ruamel.yaml as yaml
-
+#import ruamel.yaml as yaml
+import yaml as yaml
 from stimulus import stims, add_stims
 import models
 
