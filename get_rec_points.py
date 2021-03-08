@@ -6,6 +6,22 @@ Created on Mon Nov 11 12:09:28 2019
 """
 import numpy as np
 from neuron import h
+prob_loc_fn = './probe-locator-101cells.csv'
+probe_dict_101 = {}
+def read_101_cell_probe_locator():
+    with open(prob_loc_fn) as fp: 
+        all_lines = fp.readlines() 
+        for line in all_lines:
+            line = line.split()
+            axprobe = line[3][5:]
+            dndprobe = line[4][5:]
+            probes = ['soma[0]',f'axon[{axprobe}]',f'dend[{dndprobe}]']
+            probe_dict_101[line[2]] = probes
+   # print(probe_dict_101)
+read_101_cell_probe_locator()
+
+def get_rec_points_101(long_name):
+    return(probe_dict_101[long_name])
 
 def create_sampling_map(power2):
     points = np.array([0,1]).tolist()
